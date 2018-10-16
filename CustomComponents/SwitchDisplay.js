@@ -32,12 +32,15 @@ export default class SwitchDisplay extends Component {
     switchPressed(switchName){
 
     }
+    setTtemp(){
+        this.setState({editTargetTemp:true});
+    }
     //return a text component when not editing target temp 
     makeTargetTempEditable(){
         if(this.state.editTargetTemp === false) {
-        return(
-            <Text>{this.state.targetTemp}</Text>
-        );
+            return(
+                <Text>{this.state.targetTemp}</Text>
+            );
         }else if(this.state.editTargetTemp === true) {
             return(        
                 <TextInput
@@ -77,37 +80,36 @@ export default class SwitchDisplay extends Component {
 
     render() {
         return (
-            <View style={styles.controlComplex}> {/*outer box*/}
-                <View><Text style={styles.baseText}>Target Temperature</Text></View>{/*target temp bar*/}
+            <View style={styles.controlComplex}> 
+                <TouchableOpacity onPress={this.setTtemp.bind(this)} >
+                <View style={styles.targetTemp}>
+                    <Text style={styles.baseText}>Target Temperature</Text>
+                    {this.makeTargetTempEditable()}
+                </View>
+                </TouchableOpacity>
                 <View style={styles.switchesComplex}>
-                    <View style={styles.switchColumn}>{/*Left column*/}
-                        <TouchableOpacity style={styles.switchField}>
-                            <View>
-                            <Text style={styles.baseText}>Heater</Text><Switch/>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.switchField}>
-                            <View>
-                            <Text style={styles.baseText}>Hot Blower</Text><Switch/>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.switchField}>
-                            <View>
-                                <Text style={styles.baseText}>Lights</Text><Switch/>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.switchColumn}>{/*Right Column*/}
-                        <TouchableOpacity style={styles.switchField}>
-                            <View>
-                                <Text style={styles.baseText}>Jets</Text><Switch/>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.switchField}>
-                            <View>
-                                <Text style={styles.baseText}>Cold Blower</Text><Switch/>
-                            </View>
-                        </TouchableOpacity>
+                    <View style={styles.switchColumn}>
+                        <View style={styles.switchRow}>
+                            <TouchableOpacity style={styles.switchField}>
+                                <Text style={styles.baseText}>Heater</Text><Switch/>     
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.switchField}>
+                                    <Text style={styles.baseText}>Cold Blower</Text><Switch/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.switchRow}>
+                            <TouchableOpacity style={styles.switchField}>
+                                <Text style={styles.baseText}>Hot Blower</Text><Switch/>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.switchField}>
+                                    <Text style={styles.baseText}>Lights</Text><Switch/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.switchRow}>
+                            <TouchableOpacity style={styles.switchField}>
+                                    <Text style={styles.baseText}>Jets</Text><Switch/>
+                            </TouchableOpacity>
+                        </View> 
                     </View>
                 </View>
             </View>

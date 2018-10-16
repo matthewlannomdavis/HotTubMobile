@@ -18,27 +18,40 @@ export default StyleSheet.create ({
     controlComplex:{
         flex:3,
         flexDirection:'column',
+        padding:1,
+    },
+    tempControl:{
+        flex:1,
+        flexDirection:'row',
         alignItems:'stretch',
     },
     switchesComplex:{
         flex:1,
         flexDirection:'row',
-        alignItems:'stretch',
-        margin:4,
+
     },
     switchColumn:{
-        flex:3,
+        flex:1,
         flexDirection:'column',
+
+    },
+    switchRow:{
+        marginTop:1,
+        flexDirection:'row',
         alignItems:'stretch',
     },
     switchField:{
         flex:1,
         flexDirection:'row',
-        alignItems:'stretch',
-        margin:4,
+        margin:1,
+        borderWidth:1,
     },
     baseText:{
         fontFamily: 'times',
+        fontSize:24,
     },
+    targetTemp:{
+        flexDirection:'row'
+    }
 
 });

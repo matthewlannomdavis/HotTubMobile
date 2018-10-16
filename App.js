@@ -6,7 +6,7 @@ import SwitchDisplay from './CustomComponents/SwitchDisplay';
 export default class App extends Component {
   render() {
     return (
-      <View>
+      <View style={{flex:2}}>
           <TemperatureDisplay />
           <SwitchDisplay />
       </View>

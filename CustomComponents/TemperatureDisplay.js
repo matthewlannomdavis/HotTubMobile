@@ -11,6 +11,7 @@ export default class TemperatureDisplay extends Component {
                     <Text style={styles.temperature}>
                         { "101.5" + "\u2109" }
                     </Text>
+                    {/*TODO:Fix date not being a finite value in DateTimeFormat format()
                     <Text style={styles.temperatureAsOf}>
                         as of { new Intl.DateTimeFormat('en-US', {
                             year: 'numeric',
@@ -18,6 +19,7 @@ export default class TemperatureDisplay extends Component {
                             day: '2-digit',
                         }).format(Date.now)}
                     </Text>
+                    */}
                 </View>
     }
 }

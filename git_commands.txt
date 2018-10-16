@@ -1,0 +1,14 @@
+If you have made local changes that you haven't pushed, and you want to pull down my latest changes:
+
+    $ git pull --rebase --autostash # automatically stashes your changes, pulls, then applies your stashed changes locally
+
+Or you can do the same thing with separate individual commands:
+
+    $ git stash # tucks your changes aside
+    $ git pull # pulls down my changes
+    $ git stash pop # re-applies your changes to the version with my changes
+
+If there are no conflicts, this just works. If there are conflicts, those conflicts will stay in your git stash. To view them:
+
+    $ git stash list
+
