@@ -19,11 +19,18 @@ export default StyleSheet.create ({
         flex:3,
         flexDirection:'column',
         padding:1,
+        backgroundColor: '#000000',
+        borderTopColor: '#ffeecc',
+        borderTopWidth:1,
     },
     tempControl:{
         flex:1,
         flexDirection:'row',
         alignItems:'stretch',
+        
+    },
+    tempControlInput:{
+        backgroundColor:'white',
     },
     switchesComplex:{
         flex:1,
@@ -45,8 +52,11 @@ export default StyleSheet.create ({
         flexDirection:'row',
         margin:1,
         borderWidth:1,
+        borderColor:'#ffeecc',
+        justifyContent:"space-between",
     },
     baseText:{
+        color: '#ffeecc',
         fontFamily: 'times',
         fontSize:24,
     },

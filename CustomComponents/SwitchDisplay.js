@@ -39,11 +39,12 @@ export default class SwitchDisplay extends Component {
     makeTargetTempEditable(){
         if(this.state.editTargetTemp === false) {
             return(
-                <Text>{this.state.targetTemp}</Text>
+                <Text style={styles.baseText}>{this.state.targetTemp}</Text>
             );
         }else if(this.state.editTargetTemp === true) {
             return(        
                 <TextInput
+                    style={styles.tempControlInput}
                     editable={true}
                     maxLength={5}
                     autoFocus={true}
@@ -53,6 +54,15 @@ export default class SwitchDisplay extends Component {
                     onSubmitEditing={() => this.setState({editTargetTemp:false})}
                 />
             );
+        }
+    }
+    getswitchColor(currentSwitchState){
+        if(currentSwitchState === false){
+            return('red');
+        }else if(currentSwitchState === true){
+            return('green');
+        }else if(currentSwitchState === 'unknown'){
+            return('yellow');
         }
     }
     //set values as needed from props
@@ -83,7 +93,7 @@ export default class SwitchDisplay extends Component {
             <View style={styles.controlComplex}> 
                 <TouchableOpacity onPress={this.setTtemp.bind(this)} >
                 <View style={styles.targetTemp}>
-                    <Text style={styles.baseText}>Target Temperature</Text>
+                    <Text style={styles.baseText}>Target Temperature    </Text>
                     {this.makeTargetTempEditable()}
                 </View>
                 </TouchableOpacity>
@@ -91,23 +101,38 @@ export default class SwitchDisplay extends Component {
                     <View style={styles.switchColumn}>
                         <View style={styles.switchRow}>
                             <TouchableOpacity style={styles.switchField}>
-                                <Text style={styles.baseText}>Heater</Text><Switch/>     
+                                <Text style={styles.baseText}>Heater</Text>
+                                <Switch
+                                    tintColor={this.getswitchColor(this.state.heaterSwitch)}
+                                />     
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.switchField}>
-                                    <Text style={styles.baseText}>Cold Blower</Text><Switch/>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.switchRow}>
-                            <TouchableOpacity style={styles.switchField}>
-                                <Text style={styles.baseText}>Hot Blower</Text><Switch/>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.switchField}>
-                                    <Text style={styles.baseText}>Lights</Text><Switch/>
+                                    <Text style={styles.baseText}>Cold Blower</Text>
+                                    <Switch
+                                        tintColor={this.getswitchColor(this.state.cBlowerState)}
+                                    />
                             </TouchableOpacity>
                         </View>
                         <View style={styles.switchRow}>
                             <TouchableOpacity style={styles.switchField}>
-                                    <Text style={styles.baseText}>Jets</Text><Switch/>
+                                <Text style={styles.baseText}>Hot Blower</Text>
+                                <Switch
+                                    tintColor={this.getswitchColor(this.state.HBlowerState)}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.switchField}>
+                                    <Text style={styles.baseText}>Lights</Text>
+                                    <Switch
+                                        tintColor={this.getswitchColor(this.state.lightsState)}
+                                    />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.switchRow}>
+                            <TouchableOpacity style={styles.switchField}>
+                                    <Text style={styles.baseText}>Jets</Text>
+                                    <Switch
+                                        tintColor={this.getswitchColor(this.state.jetsState)}
+                                    />
                             </TouchableOpacity>
                         </View> 
                     </View>
