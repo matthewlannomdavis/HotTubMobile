@@ -1,25 +1,23 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import styles from '../styles';
+import Moment from 'moment';
 
-// \u2103 = degrees Celsius
-// \u2109 = degrees Fahrenheit
-// \u00B0 = degrees (no scale)
+const dF = "\u2109"; // degrees Celsius symbol
+const dC = "\u2103"; // degrees Fahrenheit symbol
+const d = "\u00B0";  // degrees symbol (no scale)
+
+scale = dF;
+
 export default class TemperatureDisplay extends Component {
     render() {
         return  <View style={styles.temperatureContainer}>
                     <Text style={styles.temperature}>
-                        { "101.5" + "\u2109" }
+                        { "101.5" + scale }
                     </Text>
-                    {/*TODO:Fix date not being a finite value in DateTimeFormat format()
-                    <Text style={styles.temperatureAsOf}>
-                        as of { new Intl.DateTimeFormat('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: '2-digit',
-                        }).format(Date.now)}
+                    <Text style={styles.asOf}>
+                        as of { Moment(Date.now()).format('hh:mma') }
                     </Text>
-                    */}
                 </View>
     }
 }

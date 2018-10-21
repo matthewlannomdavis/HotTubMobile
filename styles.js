@@ -1,19 +1,21 @@
-import {Dimensions,StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 
 const screen = Dimensions.get('window');
+
 export default StyleSheet.create ({
     temperatureContainer: {
         padding: 10,
-        height: '30%',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'flex-end',
         backgroundColor: '#000000',
     },
     temperature: {
         fontSize: 72,
         fontFamily: 'times',
         color: '#ffeecc',
-        textAlign: 'right',
+    },
+    asOf: {
+        fontSize: 10,
+        color: '#ffeecc',
     },
     controlComplex:{
         flex:3,
@@ -27,7 +29,6 @@ export default StyleSheet.create ({
         flex:1,
         flexDirection:'row',
         alignItems:'stretch',
-        
     },
     tempControlInput:{
         backgroundColor:'white',
@@ -35,12 +36,10 @@ export default StyleSheet.create ({
     switchesComplex:{
         flex:1,
         flexDirection:'row',
-
     },
     switchColumn:{
         flex:1,
         flexDirection:'column',
-
     },
     switchRow:{
         marginTop:1,
@@ -51,17 +50,15 @@ export default StyleSheet.create ({
         flex:1,
         flexDirection:'row',
         margin:1,
-        borderWidth:1,
-        borderColor:'#ffeecc',
         justifyContent:"space-between",
+        backgroundColor: "#333333",
     },
     baseText:{
         color: '#ffeecc',
         fontFamily: 'times',
-        fontSize:24,
+        fontSize:14,
     },
     targetTemp:{
         flexDirection:'row'
     }
-
 });
