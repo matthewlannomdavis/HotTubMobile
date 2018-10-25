@@ -6,7 +6,7 @@ import SwitchDisplay from './CustomComponents/SwitchDisplay';
 export default class App extends Component {
   state = {
     data:[],
-    targetTemp: 100.0,
+    targetTemp: '100.0',
     heaterState:false,
     cBlowerState:false,
     HBlowerState:false,
@@ -17,6 +17,14 @@ export default class App extends Component {
   }
   getThingSpeakData(){
     //TODO: make a call to thing speak and then update state
+  }
+  newTargetTemp(newTargetTemp){
+    let temp = parseFloat(newTargetTemp);
+    console.log('new target temp is ' + newTargetTemp)
+    if(temp < 0 && temp > 102){
+      this.setState({targetTemp:newTargetTemp, stateChanged:true});
+      
+    }
   }
   switchStateChange(stateName){
     switch(stateName){
@@ -63,6 +71,7 @@ export default class App extends Component {
             currentStates={[this.state.heaterState, this.state.cBlowerState, this.state.HBlowerState, this.state.lightsState, this.state.jetsState]} 
             targetTemp={this.state.targetTemp}  
             callBackFunction={this.switchStateChange.bind(this)}
+            callBackTempChange={this.newTargetTemp.bind(this)}
           />
       </View>
     );

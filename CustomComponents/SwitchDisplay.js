@@ -11,7 +11,7 @@ import styles from '../styles';
 
 export default class SwitchDisplay extends Component {
     state = {
-        targetTemp:"00.0",
+        targetTemp: '0',
         editTargetTemp:false,
     };
     //Props:
@@ -23,9 +23,8 @@ export default class SwitchDisplay extends Component {
     //       consider both functions and data to be arrays
     //<SwitchDisplay Data=variableArray targetTemp=102 callbackFunction=callbackFunction />
     // End of props expected
-
-    switchPressed(switchName){
-
+    componentWillMount(){
+    
     }
     setTtemp(){
         this.setState({editTargetTemp:true});
@@ -34,7 +33,7 @@ export default class SwitchDisplay extends Component {
     makeTargetTempEditable(){
         if(this.state.editTargetTemp === false) {
             return(
-                <Text style={styles.baseText}>{this.state.targetTemp}</Text>
+                <Text style={styles.baseText}>{this.props.targetTemp}</Text>
             );
         }else if(this.state.editTargetTemp === true) {
             return(        
@@ -42,11 +41,16 @@ export default class SwitchDisplay extends Component {
                     style={styles.tempControlInput}
                     editable={true}
                     maxLength={5}
+                    clearTextOnFocus={true}
                     autoFocus={true}
                     keyboardType={'numeric'}
                     onChangeText={(text) => this.setState({targetTemp:text})}
                     value={this.state.targetTemp}
-                    onSubmitEditing={() => this.setState({editTargetTemp:false})}
+                    onSubmitEditing={() => {
+                                            this.setState({editTargetTemp:false})
+                                            this.props.callBackTempChange(this.state.targetTemp)
+                                            }
+                                    }
                 />
             );
         }
@@ -107,7 +111,7 @@ export default class SwitchDisplay extends Component {
                                     <Text style={styles.baseText}>Cold Blower</Text>
                                     <Switch
                                         value={this.props.currentStates[1]}
-                                        onPress={() => this.props.callBackFunction('cBlower')}
+                                        onValueChange={() => this.props.callBackFunction('cBlower')}
                                         tintColor={this.getswitchColor(this.props.currentStates[1])}
                                     />
                             </TouchableOpacity>
@@ -117,7 +121,7 @@ export default class SwitchDisplay extends Component {
                                 <Text style={styles.baseText}>Hot Blower</Text>
                                 <Switch
                                     value={this.props.currentStates[2]}
-                                    onPress={() => this.props.callBackFunction('hBlower')}
+                                    onValueChange={() => this.props.callBackFunction('hBlower')}
                                     tintColor={this.getswitchColor(this.props.currentStates[2])}
                                 />
                             </TouchableOpacity>
@@ -125,7 +129,7 @@ export default class SwitchDisplay extends Component {
                                     <Text style={styles.baseText}>Lights</Text>
                                     <Switch
                                         value={this.props.currentStates[3]}
-                                        onPress={() => this.props.callBackFunction('lights')}
+                                        onValueChange={() => this.props.callBackFunction('lights')}
                                         tintColor={this.getswitchColor(this.props.currentStates[3])}
                                     />
                             </TouchableOpacity>
@@ -135,7 +139,7 @@ export default class SwitchDisplay extends Component {
                                     <Text style={styles.baseText}>Jets</Text>
                                     <Switch
                                         value={this.props.currentStates[4]}
-                                        onPress={() => this.props.callBackFunction('jets')}
+                                        onValueChange={() => this.props.callBackFunction('jets')}
                                         tintColor={this.getswitchColor(this.props.currentStates[4])}
                                     />
                             </TouchableOpacity>
