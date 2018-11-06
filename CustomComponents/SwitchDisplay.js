@@ -14,6 +14,7 @@ export default class SwitchDisplay extends Component {
         targetTemp: '0',
         editTargetTemp:false,
     };
+
     //Props:
     //  JetState, HBlowerState, CBlowerState, 
     //   OR
@@ -23,6 +24,7 @@ export default class SwitchDisplay extends Component {
     //       consider both functions and data to be arrays
     //<SwitchDisplay Data=variableArray targetTemp=102 callbackFunction=callbackFunction />
     // End of props expected
+    
     componentWillMount(){
     
     }

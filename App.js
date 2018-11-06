@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View} from 'react-native';
 import TemperatureDisplay from './CustomComponents/TemperatureDisplay';
 import SwitchDisplay from './CustomComponents/SwitchDisplay';
+import API from './Api.json';
 
 export default class App extends Component {
   state = {
@@ -17,13 +18,94 @@ export default class App extends Component {
   }
   getThingSpeakData(){
     //TODO: make a call to thing speak and then update state
+    
+    fetch(API["readingURLs"]["data_directory_URL"] + API["readingKeys"]["data_api_key"] +'&results=2',{
+      method: 'GET',
+      headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+    })
+    .then((response) => response.json())
+    .then((responseJson) => this.setState({data:responseJson}))
+    .catch((error) => {
+      console.error(error);
+    }).done();
+
+    //fetch for target data
+    fetch(API["readingURLs"]["target_directory_URL"] + API["readingKeys"]["target_api_key"] + '&results=2',{
+      method: 'GET',
+      headers:{
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => response.json())
+    .then((responseJson) => this.setState({targetData: responseJson}))
+    .catch((error) => {
+      console.error(error);
+    }).done();
   }
+  
+  uploadTargetData(){
+
+  }
+  currentStateTester(currentState){
+    if(currentState === true){
+      return '1';
+    }else{
+      return '0';
+    }
+  }
+  //this area handles uploading the control information
+  compileInfo() {
+    let jets = this.currentStateTester(this.state.jetsState);
+    let light = this.currentStateTester(this.state.lightsState);
+    let coldBlower = this.currentStateTester(this.state.cBlowerState);
+    let hotBlower = this.currentStateTester(this.state.HBlowerState);
+
+    var theInformation =
+    API[ "sendingTargetData"]["directory_URL"] + API[ "sendingTargetData"]["api_key"] +
+    '&field1='+targetTemp+
+    '&field2='+jets+
+    '&field3='+light+
+    '&field4='+coldBlower+
+    '&field5='+hotBlower;
+    
+    console.log(theInformation);
+    this.uploadThingData(theInformation);
+  }//end of compileInfo func
+
+  uploadThingData(compiledInfo) {
+    console.log('Awaiting response from thingData after sending data')
+    var url = compiledInfo
+    fetch(url,{
+      method: 'GET',
+      headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+    })
+    .then((response) => console.log(response.json()))
+    .then(this.setState({dirtyFlag: false}))
+    .catch((error) => {
+      console.error(error);
+    });
+    console.log('end of update thing data')
+  }//end of updateThingData Func
+  //end of updating the channels
+
+  async compileOnInterval(){
+    if(this.state.stateChanged === true){
+
+    }
+  }
+
   newTargetTemp(newTargetTemp){
     let temp = parseFloat(newTargetTemp);
     console.log('new target temp is ' + newTargetTemp)
     if(temp < 0 && temp > 102){
-      this.setState({targetTemp:newTargetTemp, stateChanged:true});
-      
+      this.setState({targetTemp:newTargetTemp, stateChanged:true}); 
     }
   }
   switchStateChange(stateName){
@@ -64,6 +146,7 @@ export default class App extends Component {
 
   render() {
     console.log(this.state);
+    console.log(API["readingURLs"]["data_directory_URL"] + API["readingKeys"]["data_api_key"] +'&results=2');
     return (
       <View style={{flex:2}}>
           <TemperatureDisplay />
