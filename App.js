@@ -2,11 +2,17 @@ import React, {Component} from 'react';
 import {View} from 'react-native';
 import TemperatureDisplay from './CustomComponents/TemperatureDisplay';
 import SwitchDisplay from './CustomComponents/SwitchDisplay';
-import API from './Api.json';
+import theAPI from './Api.json';
+
+const intervalTicker = 30000;
+const API = theAPI;
+console.log(API);
 
 export default class App extends Component {
+  
   state = {
     data:[],
+    targetData:[],
     targetTemp: '100.0',
     heaterState:false,
     cBlowerState:false,
@@ -14,12 +20,21 @@ export default class App extends Component {
     lightsState:false,
     jetsState:false,
     stateChanged:false,
+    tickTimer: 0,
+    refreshState:0,
     
+  }
+  componentDidMount(){
+    this.getThingSpeakData();
+    this.timer = setInterval(() => this.compileOnInterval(), intervalTicker);
+  }
+  componentWillUnmount(){
+    clearInterval(this.timer);
   }
   getThingSpeakData(){
     //TODO: make a call to thing speak and then update state
     
-    fetch(API["readingURLs"]["data_directory_URL"] + API["readingKeys"]["data_api_key"] +'&results=2',{
+    fetch(API["readingURLs"][0]["data_directory_URL"] + API["readingKeys"][0]["data_api_key"] +'&results=2',{
       method: 'GET',
       headers: {
     Accept: 'application/json',
@@ -27,13 +42,13 @@ export default class App extends Component {
   },
     })
     .then((response) => response.json())
-    .then((responseJson) => this.setState({data:responseJson}))
+    .then((responseJson) => this.setState({data:responseJson, refreshState:1}))
     .catch((error) => {
       console.error(error);
     }).done();
 
     //fetch for target data
-    fetch(API["readingURLs"]["target_directory_URL"] + API["readingKeys"]["target_api_key"] + '&results=2',{
+    fetch(API["readingURLs"][0]["target_directory_URL"] + API["readingKeys"][0]["target_api_key"] + '&results=2',{
       method: 'GET',
       headers:{
         Accept: 'application/json',
@@ -41,21 +56,34 @@ export default class App extends Component {
       },
     })
     .then((response) => response.json())
-    .then((responseJson) => this.setState({targetData: responseJson}))
+    .then((responseJson) => this.setState({targetData: responseJson, refreshState:1}))
     .catch((error) => {
       console.error(error);
     }).done();
   }
-  
-  uploadTargetData(){
 
-  }
   currentStateTester(currentState){
     if(currentState === true){
       return '1';
     }else{
       return '0';
     }
+  }
+  currentStateTransformer(currentState){
+    //checks to see if a value of 0 or 1 is given and then returns true or false
+    if(currentState === "0"){
+      return false;
+    }else if(currentState === "1"){
+      return true;
+    }
+    if(currentState === 0){
+      return false;
+    }else if(currentState === 1){
+      return true;
+    }
+    console.log("currentStatTransformer was called but given value " + currentState
+                + "\n returning false fallback");
+    return false;
   }
   //this area handles uploading the control information
   compileInfo() {
@@ -65,8 +93,8 @@ export default class App extends Component {
     let hotBlower = this.currentStateTester(this.state.HBlowerState);
 
     var theInformation =
-    API[ "sendingTargetData"]["directory_URL"] + API[ "sendingTargetData"]["api_key"] +
-    '&field1='+targetTemp+
+    API[ "sendingTargetData"][0]["directory_URL"] + API[ "sendingTargetData"][0]["api_key"] +
+    '&field1='+this.state.targetTemp+
     '&field2='+jets+
     '&field3='+light+
     '&field4='+coldBlower+
@@ -86,8 +114,8 @@ export default class App extends Component {
     'Content-Type': 'application/json',
   },
     })
-    .then((response) => console.log(response.json()))
-    .then(this.setState({dirtyFlag: false}))
+    .then((response) => console.log(response))
+    .then(this.setState({stateChanged: false}))
     .catch((error) => {
       console.error(error);
     });
@@ -97,14 +125,17 @@ export default class App extends Component {
 
   async compileOnInterval(){
     if(this.state.stateChanged === true){
-
+      this.compileInfo();
+    }
+    if(this.state.stateChanged === false){
+    this.getThingSpeakData();
     }
   }
 
   newTargetTemp(newTargetTemp){
     let temp = parseFloat(newTargetTemp);
-    console.log('new target temp is ' + newTargetTemp)
-    if(temp < 0 && temp > 102){
+    console.log('new target temp is ' + newTargetTemp);
+    if(temp > 0 && temp < 104){
       this.setState({targetTemp:newTargetTemp, stateChanged:true}); 
     }
   }
@@ -144,9 +175,36 @@ export default class App extends Component {
     }
   }
 
+  updateTheStates(){
+    if(this.state.refreshState === 1){
+      if(this.state.data.length !== 0){
+        if(this.state.targetData.length !== 0){
+          this.setState({
+            targetTemp: (Math.round(100*this.state.targetData['feeds'][1]['field1'])/100).toString(),
+            jetsState: this.currentStateTransformer(this.state.data['feeds'][1]['field3']),
+            lightsState: this.currentStateTransformer(this.state.data['feeds'][1]['field4']),
+            cBlowerState: this.currentStateTransformer(this.state.data['feeds'][1]['field5']),
+            HBlowerState: this.currentStateTransformer(this.state.data['feeds'][1]['field6']),
+            heaterState: this.currentStateTransformer(this.state.data['feeds'][1]['field2']),
+            refreshState:0,
+          });
+        }else{
+          this.setState({
+            jetsState: this.currentStateTransformer(this.state.data['feeds'][1]['field3']),
+            lightsState: this.currentStateTransformer(this.state.data['feeds'][1]['field4']),
+            cBlowerState: this.currentStateTransformer(this.state.data['feeds'][1]['field5']),
+            HBlowerState: this.currentStateTransformer(this.state.data['feeds'][1]['field6']),
+            heaterState: this.currentStateTransformer(this.state.data['feeds'][1]['field2']),
+            refreshState:0,
+          });
+        }
+      }
+    }
+  }
+
   render() {
     console.log(this.state);
-    console.log(API["readingURLs"]["data_directory_URL"] + API["readingKeys"]["data_api_key"] +'&results=2');
+    this.updateTheStates();
     return (
       <View style={{flex:2}}>
           <TemperatureDisplay />
