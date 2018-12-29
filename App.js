@@ -2,18 +2,21 @@ import React, {Component} from 'react';
 import {View} from 'react-native';
 import TemperatureDisplay from './CustomComponents/TemperatureDisplay';
 import SwitchDisplay from './CustomComponents/SwitchDisplay';
-import theAPI from './Api.json';
+import app_config from './appconfig.json';
 
-const intervalTicker = 30000;
-const API = theAPI;
-console.log(API);
+const intervalTicker = 30000; // 30 seconds
+const appConfig = app_config;
+const readDataUrl = appConfig.thingSpeak.readUrl.replace('{id}', appConfig.thingSpeak.dataChannel.id).replace('{read_key}', appConfig.thingSpeak.dataChannel.read_key);
+const readControlUrl = appConfig.thingSpeak.readUrl.replace('{id}', appConfig.thingSpeak.controlChannel.id).replace('{read_key}', appConfig.thingSpeak.controlChannel.read_key);
+const writeControlUrl = appConfig.thingSpeak.writeUrl.replace('{write_key}', appConfig.thingSpeak.controlChannel.write_key);
+console.log(appConfig);
 
 export default class App extends Component {
   
   state = {
     data:[],
     targetData:[],
-    targetTemp: '100.0',
+    targetTemp: '102.0',
     heaterState:false,
     cBlowerState:false,
     HBlowerState:false,
@@ -22,24 +25,26 @@ export default class App extends Component {
     stateChanged:false,
     tickTimer: 0,
     refreshState:0,
-    
   }
+
   componentDidMount(){
     this.getThingSpeakData();
     this.timer = setInterval(() => this.compileOnInterval(), intervalTicker);
   }
+
   componentWillUnmount(){
     clearInterval(this.timer);
   }
+
   getThingSpeakData(){
-    //TODO: make a call to thing speak and then update state
-    
-    fetch(API["readingURLs"][0]["data_directory_URL"] + API["readingKeys"][0]["data_api_key"] +'&results=2',{
+
+    // Read current hot tub state
+    fetch(readDataUrl, {
       method: 'GET',
       headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     })
     .then((response) => response.json())
     .then((responseJson) => this.setState({data:responseJson, refreshState:1}))
@@ -47,8 +52,8 @@ export default class App extends Component {
       console.error(error);
     }).done();
 
-    //fetch for target data
-    fetch(API["readingURLs"][0]["target_directory_URL"] + API["readingKeys"][0]["target_api_key"] + '&results=2',{
+    //Fetch current control state
+    fetch(readControlUrl, {
       method: 'GET',
       headers:{
         Accept: 'application/json',
@@ -85,34 +90,34 @@ export default class App extends Component {
                 + "\n returning false fallback");
     return false;
   }
-  //this area handles uploading the control information
+
   compileInfo() {
+    //this area handles uploading the control information
     let jets = this.currentStateTester(this.state.jetsState);
     let light = this.currentStateTester(this.state.lightsState);
     let coldBlower = this.currentStateTester(this.state.cBlowerState);
     let hotBlower = this.currentStateTester(this.state.HBlowerState);
 
-    var theInformation =
-    API[ "sendingTargetData"][0]["directory_URL"] + API[ "sendingTargetData"][0]["api_key"] +
-    '&field1='+this.state.targetTemp+
-    '&field2='+jets+
-    '&field3='+light+
-    '&field4='+coldBlower+
-    '&field5='+hotBlower;
+    var theInformation = writeControlUrl
+      .replace('{1}', this.state.targetTemp)
+      .replace('{2}', jets)
+      .replace('{3}', light)
+      .replace('{4}', coldBlower)
+      .replace('{5}', hotBlower);
     
     console.log(theInformation);
     this.uploadThingData(theInformation);
-  }//end of compileInfo func
+  }
 
   uploadThingData(compiledInfo) {
     console.log('Awaiting response from thingData after sending data')
     var url = compiledInfo
-    fetch(url,{
+    fetch(url, {
       method: 'GET',
       headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     })
     .then((response) => console.log(response))
     .then(this.setState({stateChanged: false}))
@@ -120,7 +125,7 @@ export default class App extends Component {
       console.error(error);
     });
     console.log('end of update thing data')
-  }//end of updateThingData Func
+  }
   //end of updating the channels
 
   async compileOnInterval(){
@@ -139,6 +144,7 @@ export default class App extends Component {
       this.setState({targetTemp:newTargetTemp, stateChanged:true}); 
     }
   }
+  
   switchStateChange(stateName){
     switch(stateName){
       case 'cBlower':
