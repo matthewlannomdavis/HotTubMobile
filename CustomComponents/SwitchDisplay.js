@@ -11,7 +11,7 @@ import styles from '../styles';
 
 export default class SwitchDisplay extends Component {
     state = {
-        targetTemp: '0',
+        targetTemp: '<?>',
         editTargetTemp:false,
     };
 
@@ -25,20 +25,21 @@ export default class SwitchDisplay extends Component {
     //<SwitchDisplay Data=variableArray targetTemp=102 callbackFunction=callbackFunction />
     // End of props expected
     
-    componentWillMount(){
-    
+    componentWillMount() {
     }
-    setTtemp(){
+
+    setTtemp() {
         this.setState({editTargetTemp:true});
     }
+
     //return a text component when not editing target temp 
-    makeTargetTempEditable(){
+    makeTargetTempEditable() {
         if(this.state.editTargetTemp === false) {
             return(
                 <Text style={styles.baseText}>{this.props.targetTemp}</Text>
             );
-        }else if(this.state.editTargetTemp === true) {
-            return(        
+        } else if(this.state.editTargetTemp === true) {
+            return(
                 <TextInput
                     style={styles.tempControlInput}
                     editable={true}
@@ -48,15 +49,17 @@ export default class SwitchDisplay extends Component {
                     keyboardType={'numeric'}
                     onChangeText={(text) => this.setState({targetTemp:text})}
                     value={this.state.targetTemp}
-                    onSubmitEditing={() => {
-                                            this.setState({editTargetTemp:false})
-                                            this.props.callBackTempChange(this.state.targetTemp)
-                                            }
-                                    }
+                    onSubmitEditing={
+                        () => {
+                            this.setState({editTargetTemp:false})
+                            this.props.callBackTempChange(this.state.targetTemp)
+                        }
+                    }
                 />
             );
         }
     }
+
     getswitchColor(currentSwitchState){
         if(currentSwitchState === false){
             return('red');
@@ -66,8 +69,10 @@ export default class SwitchDisplay extends Component {
             return('yellow');
         }
     }
+
+/*
     //set values as needed from props
-    setVaules(){
+    setValues(){
         //for converting to a single state rerender
         let neededData = false;
         let neededTemp = false;
@@ -78,26 +83,29 @@ export default class SwitchDisplay extends Component {
                 neededData = true;
             }
         }
+
         if(this.props.targetTemp !== null){
             neededTemp = true;
         }
+
         if(this.props.neededFunctions !== null){
             if(this.props.neededFunctions.length !== 0){
                 neededFuncs = true;
             }
         }
-        //in future have a single setState call here
+        // TODO: In future have a single setState call here
     }
+ */
 
     render() {
         console.log(this.props);
         return (
             <View style={styles.controlComplex}> 
                 <TouchableOpacity onPress={this.setTtemp.bind(this)} >
-                <View style={styles.targetTemp}>
-                    <Text style={styles.baseText}>Target Temperature    </Text>
-                    {this.makeTargetTempEditable()}
-                </View>
+                    <View style={styles.targetTemp}>
+                        <Text style={styles.baseText}>Target Temperature    </Text>
+                        {this.makeTargetTempEditable()}
+                    </View>
                 </TouchableOpacity>
                 <View style={styles.switchesComplex}>
                     <View style={styles.switchColumn}>
@@ -107,7 +115,7 @@ export default class SwitchDisplay extends Component {
                                 <Switch
                                     value={this.props.currentStates[0]}
                                     tintColor={this.getswitchColor(this.props.currentStates[0])}
-                                />     
+                                />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.switchField} onPress={() => this.props.callBackFunction('cBlower')}>
                                     <Text style={styles.baseText}>Cold Blower</Text>
