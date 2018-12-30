@@ -1,21 +1,21 @@
 {
     "thingSpeak": {
         "dataChannel": {
-            "id": "390541",
-            "read_key": "BM3TVF6Q4PJJER76",
-            "write_key": "V8EHPSCX44R9FUUU"
+            "id": "",
+            "read_key": "",
+            "write_key": ""
         },
         "controlChannel": {
-            "id": "390551",
-            "read_key": "T7WUFMLHQT7RVOKT",
-            "write_key": "EEU8VGOHCR1GNGCG"
+            "id": "",
+            "read_key": "",
+            "write_key": ""
         },
         "alertChannel": {
-            "id": "430288",
-            "read_key": "PC8R29BSDQC49E1X",
-            "write_key": "ZESCFN0UU1Z4C1PX"
+            "id": "",
+            "read_key": "",
+            "write_key": ""
         },
-        "writeUrl": "https://api.thingspeak.com/update?api_key={write_key}&field1={1]&field2={2}&field3={3}&field4={4}&field5={5}",
-        "readUrl": "https://api.thingspeak.com/channels/{id}/feeds.json?api_key={read_key}&results=2"
+        "writeUrl": "https://api.thingspeak.com/update?api_key={write_key}&field1={1}&field2={2}&field3={3}&field4={4}&field5={5}",
+        "readUrl": "https://api.thingspeak.com/channels/{id}/feeds.json?api_key={read_key}&results=1"
     }
 }
